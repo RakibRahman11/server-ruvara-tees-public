@@ -18,6 +18,7 @@ async function run() {
         const database = client.db("ruvara-tees");
         const productCollection = database.collection("products");
         const commentCollection = database.collection("comments");
+        const orderCollection = database.collection("orders");
 
         // GET all products
         app.get('/products', async (req, res) => {
@@ -33,6 +34,33 @@ async function run() {
             res.send(result)
           })
 
+        // GET all order products
+        app.get('/placeOrder', async (req, res) => {
+            const cursor = orderCollection.find({});
+            const result = await cursor.toArray();
+            res.send(result)
+          })
+        
+        // POST a new product
+        app.post('/products', async (req, res) => {
+            const product = req.body
+            const result = await productCollection.insertOne(product);
+            res.json(result);
+          })
+
+        // POST user comment
+        app.post('/comments', async (req, res) => {
+            const comments = req.body
+            const result = await commentCollection.insertOne(comments);
+            res.json(result);
+          })
+        
+        // POST place order
+        app.post('/placeOrder', async (req, res) => {
+            const order = req.body
+            const result = await orderCollection.insertOne(order)
+            res.json(result)
+          })
     } finally {
         // await client.close();
     }
